@@ -238,15 +238,28 @@ function createPasswordWindow(action) {
     });
 }
 
-app.whenReady().then(() => {
-    createPasswordWindow("open");
+const gotTheLock = app.requestSingleInstanceLock();
 
-    app.on('activate', () => {
-        if (!passwordWindow && !mainWindow) {
-            createPasswordWindow("open");
+if (!gotTheLock) {
+    app.quit();
+} else {
+    app.on('second-instance', (event, commandLine, workingDirectory) => {
+        if (mainWindow) {
+            if (mainWindow.isMinimized()) mainWindow.restore();
+            mainWindow.focus();
         }
     });
-});
+
+    app.whenReady().then(() => {
+        createPasswordWindow("open");
+
+        app.on('activate', () => {
+            if (!passwordWindow && !mainWindow) {
+                createPasswordWindow("open");
+            }
+        });
+    });
+}
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
