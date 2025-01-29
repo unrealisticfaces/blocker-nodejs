@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Blocked Process</title>
+</head>
+<body>
+    <h1>Blocked</h1>
+    <div id="process-name"></div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        ipcRenderer.on('blocked-process', (event, processName) => {
+            document.getElementById('process-name').textContent = processName;
+        });
+    </script>
+</body>
+</html>
